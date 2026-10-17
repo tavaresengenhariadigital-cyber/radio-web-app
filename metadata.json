@@ -1,0 +1,8 @@
+{
+  "name": "Remix Rádio Web Pro",
+  "description": "Plataforma Profissional de Rádio Web e Podcasts com estúdio de transmissão ao vivo, mesa de som virtual, VU Meter, soundboard, automação de músicas e gerenciador de podcasts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
