@@ -10,13 +10,16 @@ import { BroadcasterStudio } from './components/BroadcasterStudio';
 import { AuthModal } from './components/AuthModal';
 
 const AppContent: React.FC = () => {
-  const { activeTab } = useRadio();
+  const { activeTab, user } = useRadio();
 
   return (
     <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col font-sans selection:bg-sky-500 selection:text-slate-950">
       <main className="flex-1 flex flex-col">
-        {activeTab === 'listener' && <LivePlayer />}
-        {activeTab === 'studio' && <BroadcasterStudio />}
+        {activeTab === 'studio' && user?.role === 'admin' ? (
+          <BroadcasterStudio />
+        ) : (
+          <LivePlayer />
+        )}
       </main>
 
       {/* Global Auth Modal */}

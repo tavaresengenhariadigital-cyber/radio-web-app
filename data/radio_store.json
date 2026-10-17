@@ -1,0 +1,330 @@
+{
+  "users": [
+    {
+      "id": "usr_admin_1",
+      "email": "evandro230655@gmail.com",
+      "passwordHash": "230655",
+      "name": "Evandro (Radialista Principal)",
+      "role": "admin",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+    },
+    {
+      "id": "usr_listener_1",
+      "email": "ouvinte@radioweb.pro",
+      "passwordHash": "ouvinte123",
+      "name": "Carlos Silva (Membro VIP)",
+      "role": "listener",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+    }
+  ],
+  "station": {
+    "isOnAir": true,
+    "currentShow": "Manhã Interativa & Conexões",
+    "broadcaster": "Evandro",
+    "currentTrack": {
+      "title": "Aguardando Radialista",
+      "artist": "Estúdio em Espera",
+      "album": "Rádio Web Pro",
+      "duration": 0,
+      "elapsed": 0,
+      "genre": "Aguardando Música",
+      "audioUrl": "",
+      "coverUrl": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=400&q=80"
+    },
+    "bitrate": "320 kbps (HD)",
+    "audioQuality": "Stereo 48kHz Digital",
+    "streamHealth": "Excelente",
+    "startedAt": 1792203354757
+  },
+  "podcasts": [
+    {
+      "id": "pod_1",
+      "podcastTitle": "Conexão Tech",
+      "title": "IA e o Futuro do Trabalho em 2026",
+      "description": "Uma análise detalhada sobre agentes autônomos, novas interfaces de computação espacial e as competências mais valorizadas para desenvolvedores e criadores.",
+      "host": "Evandro & Equipe Tech",
+      "category": "Tecnologia",
+      "coverUrl": "/src/assets/images/podcast_conexao_1792189176735.jpg",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "duration": "38:45",
+      "durationSeconds": 2325,
+      "publishedAt": "15 Out 2026",
+      "plays": 1420
+    },
+    {
+      "id": "pod_2",
+      "podcastTitle": "Cultura & Beats",
+      "title": "A Renascença do Vinil e a Produção Analógica",
+      "description": "Por que produtores de música eletrônica e grandes gravadoras voltaram a apostar nos estúdios vintage com fita magnética e compressores valvulados.",
+      "host": "Mariana Costa",
+      "category": "Música & Cultura",
+      "coverUrl": "/src/assets/images/podcast_cultura_1792189189304.jpg",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "duration": "45:10",
+      "durationSeconds": 2710,
+      "publishedAt": "14 Out 2026",
+      "plays": 2890
+    },
+    {
+      "id": "pod_3",
+      "podcastTitle": "Notícias & Opinião",
+      "title": "Panorama Econômico Global e Tendências de Mercado",
+      "description": "Balanço da semana sobre taxas de juros, inovações no comércio exterior e as projeções do setor de radiodifusão e streaming.",
+      "host": "Roberto Mendonça",
+      "category": "Jornalismo",
+      "coverUrl": "/src/assets/images/podcast_noticias_1792189200864.jpg",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      "duration": "29:15",
+      "durationSeconds": 1755,
+      "publishedAt": "16 Out 2026",
+      "plays": 980
+    },
+    {
+      "id": "pod_4",
+      "podcastTitle": "Empreenda Pro",
+      "title": "Construindo Produtos Rentáveis do Zero",
+      "description": "Lições práticas de fundadores de sucesso sobre validação de público, modelos de receita recorrente e cultura ágil.",
+      "host": "Fernanda Lima",
+      "category": "Empreendedorismo",
+      "coverUrl": "/src/assets/images/podcast_conexao_1792189176735.jpg",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "duration": "52:20",
+      "durationSeconds": 3140,
+      "publishedAt": "12 Out 2026",
+      "plays": 3410
+    }
+  ],
+  "tracks": [
+    {
+      "id": "trk_1",
+      "title": "Midnight City Groove",
+      "artist": "Synthwave Collective",
+      "album": "Neon Echoes",
+      "duration": 215,
+      "genre": "Synthwave",
+      "bpm": 118,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": "trk_2",
+      "title": "Acoustic Sunset Breeze",
+      "artist": "Lucas & Violão",
+      "album": "Acústico Brasil",
+      "duration": 184,
+      "genre": "MPB Acústica",
+      "bpm": 95,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": "trk_3",
+      "title": "Lo-Fi Chill Hop Session",
+      "artist": "Kofi & Beats",
+      "album": "Coffee Study",
+      "duration": 240,
+      "genre": "Lo-Fi",
+      "bpm": 82,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": "trk_4",
+      "title": "Radio Hits 2026 (Remix)",
+      "artist": "DJ Marcelo Live",
+      "album": "Club Sessions",
+      "duration": 198,
+      "genre": "Pop Dance",
+      "bpm": 126,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": "trk_5",
+      "title": "Bossa Nova Urbana",
+      "artist": "Trio Carioca",
+      "album": "Copacabana Vibes",
+      "duration": 210,
+      "genre": "Bossa Nova",
+      "bpm": 92,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": "trk_6",
+      "title": "Rock Anthems Classics",
+      "artist": "The Electric Highway",
+      "album": "Overdrive",
+      "duration": 260,
+      "genre": "Classic Rock",
+      "bpm": 130,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3",
+      "coverUrl": "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=400&q=80"
+    }
+  ],
+  "soundboard": [
+    {
+      "id": "vinheta_pro",
+      "title": "Vinheta Oficial Rádio Pro",
+      "shortLabel": "Vinheta Pro",
+      "type": "synth",
+      "category": "vinheta",
+      "hotkey": "1",
+      "color": "#38bdf8"
+    },
+    {
+      "id": "air_horn",
+      "title": "Buzina Air Horn DJ",
+      "shortLabel": "Air Horn",
+      "type": "synth",
+      "category": "efeito",
+      "hotkey": "2",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "applause",
+      "title": "Aplausos de Auditório",
+      "shortLabel": "Aplausos",
+      "type": "synth",
+      "category": "efeito",
+      "hotkey": "3",
+      "color": "#10b981"
+    },
+    {
+      "id": "laser_sweep",
+      "title": "Efeito Laser Sweep",
+      "shortLabel": "Laser FX",
+      "type": "synth",
+      "category": "efeito",
+      "hotkey": "4",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "news_sting",
+      "title": "Sting de Notícias Urgentes",
+      "shortLabel": "Plantão",
+      "type": "synth",
+      "category": "transicao",
+      "hotkey": "5",
+      "color": "#ef4444"
+    },
+    {
+      "id": "vinyl_scratch",
+      "title": "Scratch de Vinil Retrô",
+      "shortLabel": "Scratch",
+      "type": "synth",
+      "category": "efeito",
+      "hotkey": "6",
+      "color": "#ec4899"
+    },
+    {
+      "id": "alert_bell",
+      "title": "Sino de Alerta / Atenção",
+      "shortLabel": "Sino Atenção",
+      "type": "synth",
+      "category": "efeito",
+      "hotkey": "7",
+      "color": "#eab308"
+    },
+    {
+      "id": "bass_drop",
+      "title": "Gota D’Água Sub Bass Drop",
+      "shortLabel": "Bass Drop",
+      "type": "synth",
+      "category": "transicao",
+      "hotkey": "8",
+      "color": "#06b6d4"
+    }
+  ],
+  "chatMessages": [
+    {
+      "id": "msg_1",
+      "senderName": "Mariana Silva",
+      "senderEmail": "mari@email.com",
+      "senderRole": "listener",
+      "text": "Boa tarde galera! O áudio está cristalino aqui em São Paulo!",
+      "timestamp": "14:20",
+      "type": "chat"
+    },
+    {
+      "id": "msg_2",
+      "senderName": "Evandro (Radialista)",
+      "senderEmail": "evandro230655@gmail.com",
+      "senderRole": "admin",
+      "text": "Sejam bem-vindos à Rádio Web Pro! Mandem seus recados e pedidos musicais no chat!",
+      "timestamp": "14:21",
+      "type": "chat"
+    },
+    {
+      "id": "msg_3",
+      "senderName": "Pedro Alcantara",
+      "senderEmail": "pedro@email.com",
+      "senderRole": "listener",
+      "text": "Toca aquela do Synthwave Collective por favor!",
+      "timestamp": "14:23",
+      "type": "song_request",
+      "songDetails": {
+        "songTitle": "Midnight City Groove",
+        "artist": "Synthwave Collective"
+      },
+      "status": "played"
+    },
+    {
+      "id": "msg_4",
+      "senderName": "Luciana Ferreira",
+      "senderEmail": "lu@email.com",
+      "senderRole": "listener",
+      "text": "Adorei o episódio novo sobre Inteligência Artificial, recomendei para todos os amigos!",
+      "timestamp": "14:25",
+      "type": "chat"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "sch_1",
+      "dayOfWeek": "Segunda a Sexta",
+      "timeSlot": "07:00 - 10:00",
+      "showTitle": "Café & Informação",
+      "host": "Roberto Mendonça",
+      "genre": "Notícias & Mercado",
+      "description": "O resumo completo das primeiras horas do dia com cotações e trânsito."
+    },
+    {
+      "id": "sch_2",
+      "dayOfWeek": "Segunda a Sexta",
+      "timeSlot": "10:00 - 13:00",
+      "showTitle": "Manhã Interativa & Conexões",
+      "host": "Evandro",
+      "genre": "Variedades, Tech & Hits",
+      "description": "Música de qualidade, debates ao vivo e participação direta dos ouvintes.",
+      "isCurrent": true
+    },
+    {
+      "id": "sch_3",
+      "dayOfWeek": "Segunda a Sexta",
+      "timeSlot": "13:00 - 16:00",
+      "showTitle": "Vibe Musical & Pedidos",
+      "host": "Mariana Costa",
+      "genre": "Pop, MPB & Rock",
+      "description": "As músicas mais pedidas pelos ouvintes no chat e redes sociais."
+    },
+    {
+      "id": "sch_4",
+      "dayOfWeek": "Segunda a Sexta",
+      "timeSlot": "16:00 - 19:00",
+      "showTitle": "Drive Time Pro",
+      "host": "Lucas Andrade",
+      "genre": "Flashback & Notícias",
+      "description": "A melhor trilha sonora para o final de tarde com boletins em tempo real."
+    },
+    {
+      "id": "sch_5",
+      "dayOfWeek": "Sábado & Domingo",
+      "timeSlot": "10:00 - 18:00",
+      "showTitle": "Especial Podcasts & Mixes",
+      "host": "Equipe Rádio Pro",
+      "genre": "Maratona Podcasts",
+      "description": "Episódios inéditos dos nossos podcasts exclusivos e sets de DJs convidados."
+    }
+  ]
+}

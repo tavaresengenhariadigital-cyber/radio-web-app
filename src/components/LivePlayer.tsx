@@ -72,6 +72,8 @@ export const LivePlayer: React.FC = () => {
       }
     } else {
       audio.pause();
+      audio.currentTime = 0;
+      audio.src = '';
     }
   }, [isPlayingLive, station.currentTrack?.audioUrl, liveVolume]);
 
@@ -130,6 +132,7 @@ export const LivePlayer: React.FC = () => {
       <audio
         ref={listenerAudioRef}
         preload="auto"
+        loop={false}
         className="hidden"
         onError={() => {
           console.warn('Listener audio fallback on error');

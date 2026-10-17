@@ -3,6 +3,8 @@ export interface User {
   name: string;
   email: string;
   role: 'admin' | 'broadcaster' | 'listener';
+  whatsapp?: string;
+  city?: string;
   avatarUrl?: string;
 }
 
@@ -19,7 +21,7 @@ export interface StationStatus {
     genre: string;
     audioUrl?: string;
     coverUrl?: string;
-  };
+  } | null;
   listenersCount: number;
   bitrate: string;
   audioQuality: string;
@@ -68,6 +70,9 @@ export interface ChatMessage {
   songDetails?: {
     songTitle: string;
     artist: string;
+    whatsapp?: string;
+    city?: string;
+    dedication?: string;
   };
   status?: 'pending' | 'played';
 }

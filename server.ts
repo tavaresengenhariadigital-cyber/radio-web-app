@@ -90,14 +90,14 @@ const initialData: RadioDatabase = {
     currentShow: 'Manhã Interativa & Conexões',
     broadcaster: 'Evandro',
     currentTrack: {
-      title: 'Midnight City Groove',
-      artist: 'Synthwave Collective',
-      album: 'Neon Echoes',
-      duration: 215,
-      elapsed: 64,
-      genre: 'Synthwave / Retro',
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      coverUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
+      title: 'Aguardando Radialista',
+      artist: 'Estúdio em Espera',
+      album: 'Rádio Web Pro',
+      duration: 0,
+      elapsed: 0,
+      genre: 'Aguardando Música',
+      audioUrl: '',
+      coverUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=400&q=80',
     },
     bitrate: '320 kbps (HD)',
     audioQuality: 'Stereo 48kHz Digital',
@@ -459,12 +459,14 @@ app.post('/api/auth/login', (req, res) => {
     name: user.name,
     email: user.email,
     role: user.role,
+    whatsapp: (user as any).whatsapp || '',
+    city: (user as any).city || '',
     avatarUrl: user.avatarUrl,
   });
 });
 
 app.post('/api/auth/register', (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, whatsapp, city } = req.body;
   if (!email || !password || !name) {
     return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
   }
@@ -481,6 +483,8 @@ app.post('/api/auth/register', (req, res) => {
     passwordHash: password,
     name: name.trim(),
     role: 'listener' as const,
+    whatsapp: (whatsapp as string)?.trim() || '',
+    city: (city as string)?.trim() || '',
     avatarUrl: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
   };
 
@@ -492,6 +496,8 @@ app.post('/api/auth/register', (req, res) => {
     name: newUser.name,
     email: newUser.email,
     role: newUser.role,
+    whatsapp: newUser.whatsapp,
+    city: newUser.city,
     avatarUrl: newUser.avatarUrl,
   });
 });

@@ -5,7 +5,7 @@ import { globalAudioEngine } from '../utils/audioEngine';
 interface RadioContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string, whatsapp?: string, city?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 
   station: StationStatus;
@@ -68,8 +68,8 @@ interface RadioContextType {
   // Modals
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
-  authDefaultTab: 'login' | 'register';
-  setAuthDefaultTab: (tab: 'login' | 'register') => void;
+  authDefaultTab: 'login' | 'register' | 'radialista';
+  setAuthDefaultTab: (tab: 'login' | 'register' | 'radialista') => void;
   isNewPodcastModalOpen: boolean;
   setIsNewPodcastModalOpen: (open: boolean) => void;
 }
@@ -79,14 +79,14 @@ const defaultStation: StationStatus = {
   currentShow: 'Manhã Interativa & Conexões',
   broadcaster: 'Evandro',
   currentTrack: {
-    title: 'Midnight City Groove',
-    artist: 'Synthwave Collective',
-    album: 'Neon Echoes',
-    duration: 215,
-    elapsed: 48,
-    genre: 'Synthwave',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    coverUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
+    title: 'Aguardando Radialista',
+    artist: 'Estúdio em Espera',
+    album: 'Rádio Web Pro',
+    duration: 0,
+    elapsed: 0,
+    genre: 'Aguardando Música',
+    audioUrl: '',
+    coverUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=400&q=80',
   },
   listenersCount: 1,
   bitrate: '320 kbps (HD)',
@@ -107,7 +107,7 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
 
-  const [activeTab, setActiveTab] = useState<'listener' | 'podcasts' | 'schedule' | 'studio' | 'about'>('listener');
+  const [activeTab, setActiveTabState] = useState<'listener' | 'podcasts' | 'schedule' | 'studio' | 'about'>('listener');
   const [station, setStation] = useState<StationStatus>(defaultStation);
   const [podcasts, setPodcasts] = useState<PodcastEpisode[]>([]);
   const [tracks, setTracks] = useState<RadioTrack[]>([]);
@@ -116,26 +116,30 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [listenersCount, setListenersCount] = useState<number>(1);
   const [wsConnected, setWsConnected] = useState<boolean>(false);
 
-  // Live Playback
-  const [isPlayingLive, setIsPlayingLive] = useState<boolean>(true);
+  // Live Playback - Default is FALSE (only plays when user tunes in and broadcaster has music on air)
+  const [isPlayingLive, setIsPlayingLive] = useState<boolean>(false);
   const [liveVolume, setLiveVolume] = useState<number>(0.85);
   const [audioQuality, setAudioQuality] = useState<string>('320 kbps (HD)');
 
-  // Auto-play on mount
-  useEffect(() => {
-    globalAudioEngine.init();
-    globalAudioEngine.setMasterGain(liveVolume);
-    if (station.currentTrack?.audioUrl) {
-      globalAudioEngine.playAudioUrl(station.currentTrack.audioUrl, station.currentTrack.title);
-    }
+  // Modals
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register' | 'radialista'>('login');
+  const [isNewPodcastModalOpen, setIsNewPodcastModalOpen] = useState<boolean>(false);
 
+  // Protected setActiveTab: Only admin can access 'studio'
+  const setActiveTab = (tab: 'listener' | 'podcasts' | 'schedule' | 'studio' | 'about') => {
+    if (tab === 'studio' && user?.role !== 'admin') {
+      setAuthDefaultTab('radialista');
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setActiveTabState(tab);
+  };
+
+  // Lazy initialize AudioEngine on user interaction without auto-playing sound
+  useEffect(() => {
     const handleFirstGesture = () => {
-      // Robustly resume AudioContext if it was suspended by browser policy
       globalAudioEngine.init();
-      
-      if (station.currentTrack?.audioUrl) {
-        globalAudioEngine.playAudioUrl(station.currentTrack.audioUrl, station.currentTrack.title);
-      }
       window.removeEventListener('click', handleFirstGesture);
       window.removeEventListener('keydown', handleFirstGesture);
       window.removeEventListener('touchstart', handleFirstGesture);
@@ -164,10 +168,6 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentAutomationTrack, setCurrentAutomationTrack] = useState<RadioTrack | null>(null);
   const [isAutomationPlaying, setIsAutomationPlaying] = useState<boolean>(false);
 
-  // Modals
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register'>('login');
-  const [isNewPodcastModalOpen, setIsNewPodcastModalOpen] = useState<boolean>(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const clientId = useRef<string>('client_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
@@ -385,13 +385,13 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string, whatsapp?: string, city?: string) => {
     const cleanEmail = email.toLowerCase().trim();
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email: cleanEmail, password }),
+        body: JSON.stringify({ name, email: cleanEmail, password, whatsapp, city }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -403,12 +403,14 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const data = await res.json().catch(() => ({}));
       return { success: false, error: data.error || 'Erro ao criar conta.' };
     } catch {
-      // Offline / Netlify fallback
+      // Offline fallback
       const newUser: User = {
         id: 'usr_' + Date.now(),
         email: cleanEmail,
         name: name.trim(),
         role: 'listener',
+        whatsapp: whatsapp?.trim() || '',
+        city: city?.trim() || '',
       };
       setUser(newUser);
       localStorage.setItem('radioweb_user', JSON.stringify(newUser));
@@ -654,12 +656,18 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     wsRef.current.send(
       JSON.stringify({
         type: 'chat_message',
-        senderName: user ? user.name : 'Ouvinte Visitante',
+        senderName: user ? user.name : 'Ouvinte Cadastrado',
         senderEmail: user ? user.email : '',
         senderRole: user ? user.role : 'listener',
         text: comment || `Pediu a música: ${songTitle} - ${artist}`,
         msgType: 'song_request',
-        songDetails: { songTitle, artist },
+        songDetails: {
+          songTitle,
+          artist,
+          whatsapp: user?.whatsapp || '',
+          city: user?.city || '',
+          dedication: comment,
+        },
       })
     );
   };
