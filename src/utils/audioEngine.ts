@@ -46,6 +46,7 @@ export class RadioAudioEngine {
   }) => void;
 
   public onWaveformData?: (data: Uint8Array) => void;
+  public onTrackEnded?: () => void;
 
   private animationFrameId: number | null = null;
 
@@ -440,34 +441,42 @@ export class RadioAudioEngine {
 
   public playAudioUrl(url: string, title?: string): HTMLAudioElement | null {
     this.init();
-    if (!this.ctx) return null;
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume().catch(() => {});
+    }
 
     this.stopRadioAutomation();
 
     try {
       const audio = new Audio();
-      if (!url.startsWith('blob:')) {
-        audio.crossOrigin = 'anonymous';
-      }
+      audio.preload = 'auto';
+      audio.volume = Math.min(1, Math.max(0, this.normalMusicGain));
       audio.src = url;
-      audio.load();
 
-      let source: MediaElementAudioSourceNode | null = null;
-      try {
-        if (this.musicGain) {
-          source = this.ctx.createMediaElementSource(audio);
-          source.connect(this.musicGain);
+      audio.onended = () => {
+        this.isMusicPlaying = false;
+        if (this.onTrackEnded) {
+          this.onTrackEnded();
         }
-      } catch (corsErr) {
-        console.warn('CORS restriction on createMediaElementSource, playing audio directly:', corsErr);
-      }
+      };
 
-      audio.play().catch((err) => {
-        console.warn('Audio playback error (autoplay policy or network):', err);
-      });
+      audio.onerror = (e) => {
+        console.warn('Audio error on primary URL, retrying via proxy:', e);
+        if (!url.startsWith('/api/audio-proxy') && !url.startsWith('blob:')) {
+          audio.src = `/api/audio-proxy?url=${encodeURIComponent(url)}`;
+          audio.load();
+          audio.play().catch((err) => console.warn('Proxy retry error:', err));
+        }
+      };
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Audio autoplay waiting for user interaction:', err);
+        });
+      }
 
       this.currentAudioElement = audio;
-      this.currentMediaSource = source;
       this.isMusicPlaying = true;
       this.currentTrackId = title || 'Música da Internet';
 

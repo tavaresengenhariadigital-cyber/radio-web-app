@@ -37,7 +37,9 @@ import {
   Eye,
   Check,
   RotateCcw,
-  ExternalLink
+  ExternalLink,
+  Headphones,
+  LogOut
 } from 'lucide-react';
 import { RadioTrack } from '../types';
 
@@ -64,6 +66,8 @@ export const BroadcasterStudio: React.FC = () => {
     addPodcast,
     startLiveBroadcastAudio,
     stopLiveBroadcastAudio,
+    setActiveTab,
+    logout,
   } = useRadio();
 
   // Studio State
@@ -101,18 +105,29 @@ export const BroadcasterStudio: React.FC = () => {
   const [directUrlInput, setDirectUrlInput] = useState('');
 
   // --- SEQUENTIAL PLAYLIST QUEUE (Tocar uma atrás da outra) ---
-  const [playlistQueue, setPlaylistQueue] = useState<RadioTrack[]>([]);
+  const [playlistQueue, setPlaylistQueue] = useState<RadioTrack[]>(tracks);
   const [currentQueueIndex, setCurrentQueueIndex] = useState<number>(0);
   const [autoplayNext, setAutoplayNext] = useState<boolean>(true);
   const [activeVideoTrack, setActiveVideoTrack] = useState<RadioTrack | null>(null);
 
-  // Fetch initial tracks from Supabase
+  // Fetch initial tracks from API or fallback to context tracks
   useEffect(() => {
     fetch('/api/tracks')
       .then((res) => res.json())
-      .then((data) => setPlaylistQueue(data))
-      .catch((err) => console.error('Error fetching tracks:', err));
-  }, []);
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPlaylistQueue(data);
+        } else if (tracks && tracks.length > 0) {
+          setPlaylistQueue(tracks);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching tracks:', err);
+        if (tracks && tracks.length > 0) {
+          setPlaylistQueue(tracks);
+        }
+      });
+  }, [tracks]);
 
   // Hidden Audio & Video element refs
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -351,13 +366,6 @@ export const BroadcasterStudio: React.FC = () => {
         videoPlayerRef.current.pause();
         videoPlayerRef.current.src = '';
       }
-      if (track.audioUrl) {
-        const audioEl = globalAudioEngine.playAudioUrl(track.audioUrl, track.title);
-        if (audioEl) {
-          audioEl.volume = Math.min(1, musicGainVal);
-          audioEl.onended = handleTrackEnded;
-        }
-      }
     }
 
     playTrackAutomation(track);
@@ -368,6 +376,17 @@ export const BroadcasterStudio: React.FC = () => {
     if (!autoplayNext) return;
     handlePlayNextInQueue();
   };
+
+  useEffect(() => {
+    globalAudioEngine.onTrackEnded = () => {
+      if (autoplayNext) {
+        handlePlayNextInQueue();
+      }
+    };
+    return () => {
+      globalAudioEngine.onTrackEnded = undefined;
+    };
+  }, [autoplayNext, playlistQueue, currentQueueIndex]);
 
   const handlePlayNextInQueue = () => {
     if (playlistQueue.length === 0) return;
@@ -498,6 +517,23 @@ export const BroadcasterStudio: React.FC = () => {
             }`}
           >
             {station.isOnAir ? 'Pausar Transmissão' : 'Iniciar No Ar'}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('listener')}
+            className="px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+            title="Voltar para a tela do ouvinte"
+          >
+            <Headphones className="w-3.5 h-3.5" />
+            <span>Modo Ouvinte</span>
+          </button>
+
+          <button
+            onClick={logout}
+            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 hover:text-rose-300 text-slate-400 border border-slate-700 transition-colors cursor-pointer"
+            title="Sair da Conta"
+          >
+            <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -1032,7 +1068,7 @@ export const BroadcasterStudio: React.FC = () => {
                           {isCurrent && isAutomationPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
                         </button>
                         <button
-                          onClick={() => handleDeleteTrack(track)}
+                          onClick={() => handleRemoveFromQueue(i)}
                           className="p-1.5 text-slate-500 hover:text-rose-400 transition-colors"
                           title="Remover da lista e excluir"
                         >

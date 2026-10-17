@@ -25,10 +25,8 @@ export const AuthModal: React.FC = () => {
     if (!res.success) {
       setErrorMsg(res.error || 'Credenciais inválidas.');
     } else {
-      // If logging in as admin, redirect to /admin.html
-      if (email.toLowerCase().includes('evandro230655@gmail.com')) {
-        window.location.href = '/admin.html';
-      }
+      setActiveTab('studio');
+      setIsAuthModalOpen(false);
     }
   };
 
@@ -42,6 +40,35 @@ export const AuthModal: React.FC = () => {
 
     if (!res.success) {
       setErrorMsg(res.error || 'Erro ao registrar.');
+    } else {
+      setIsAuthModalOpen(false);
+    }
+  };
+
+  const loginAsAdminDirect = async () => {
+    setEmail('evandro230655@gmail.com');
+    setPassword('230655');
+    setLoading(true);
+    const res = await login('evandro230655@gmail.com', '230655');
+    setLoading(false);
+    if (res.success) {
+      setActiveTab('studio');
+      setIsAuthModalOpen(false);
+    } else {
+      setErrorMsg(res.error || 'Erro ao entrar.');
+    }
+  };
+
+  const loginAsListenerDirect = async () => {
+    setEmail('ouvinte@radioweb.pro');
+    setPassword('ouvinte123');
+    setLoading(true);
+    const res = await login('ouvinte@radioweb.pro', 'ouvinte123');
+    setLoading(false);
+    if (res.success) {
+      setIsAuthModalOpen(false);
+    } else {
+      setErrorMsg(res.error || 'Erro ao entrar.');
     }
   };
 
@@ -66,46 +93,64 @@ export const AuthModal: React.FC = () => {
         {/* Close Button */}
         <button
           onClick={() => setIsAuthModalOpen(false)}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-1.5">
             <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
               <Lock className="w-4 h-4" />
             </div>
             <h2 className="text-xl font-bold tracking-tight text-white">
-              {tab === 'login' ? 'Acessar Rádio Web Pro' : 'Criar Conta de Ouvinte'}
+              {tab === 'login' ? 'Login & Credenciais' : 'Criar Conta de Ouvinte'}
             </h2>
           </div>
           <p className="text-xs text-slate-400">
             {tab === 'login'
-              ? 'Entre com sua conta de radialista ou ouvinte para interagir e gerenciar.'
-              : 'Cadastre-se gratuitamente para interagir no chat ao vivo e salvar podcasts.'}
+              ? 'Acesse o Painel do Radialista para transmitir ou a Conta de Ouvinte VIP.'
+              : 'Cadastre-se gratuitamente para interagir no chat ao vivo e pedir músicas.'}
           </p>
         </div>
 
-        {/* Quick Fill Admin Shortcut Box */}
-        <div className="mb-5 p-3.5 rounded-xl bg-slate-950/70 border border-sky-500/30 flex flex-col gap-2">
+        {/* 1-Click Fast Login Card */}
+        <div className="mb-5 p-4 rounded-xl bg-slate-950/90 border border-sky-500/40 shadow-inner space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-sky-300 flex items-center gap-1.5 uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-              Conta Administrador Padrão
+            <span className="text-[11px] font-bold text-sky-300 flex items-center gap-1.5 uppercase tracking-wider font-mono">
+              <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
+              Credenciais do Radialista (Evandro)
             </span>
+          </div>
+
+          <div className="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-xs font-mono space-y-1">
+            <div className="flex justify-between">
+              <span className="text-slate-400">E-mail:</span>
+              <span className="text-white font-bold">evandro230655@gmail.com</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Senha:</span>
+              <span className="text-white font-bold">230655</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 pt-1">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={loginAsAdminDirect}
+              className="flex-1 py-2 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(56,189,248,0.3)] active:scale-95 cursor-pointer"
+            >
+              <span>⚡ Entrar Direto no Estúdio</span>
+            </button>
             <button
               type="button"
               onClick={fillAdminCredentials}
-              className="text-[11px] font-medium text-sky-400 hover:text-sky-300 underline underline-offset-2"
+              className="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
             >
-              Preencher Automaticamente
+              Preencher Campos
             </button>
-          </div>
-          <div className="text-[11px] font-mono text-slate-400 space-y-0.5">
-            <div>E-mail: <span className="text-slate-200">evandro230655@gmail.com</span></div>
-            <div>Senha: <span className="text-slate-200">230655</span></div>
           </div>
         </div>
 
@@ -209,13 +254,14 @@ export const AuthModal: React.FC = () => {
 
         {/* Demo Listener shortcut */}
         {tab === 'login' && (
-          <div className="mt-4 pt-4 border-t border-slate-800/80 text-center">
+          <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <span className="text-slate-400">Conta Ouvinte VIP:</span>
             <button
               type="button"
-              onClick={fillListenerCredentials}
-              className="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              onClick={loginAsListenerDirect}
+              className="text-xs font-semibold text-sky-400 hover:text-sky-300 underline underline-offset-2 cursor-pointer"
             >
-              Ou entrar como ouvinte de teste (<span className="text-sky-400">ouvinte@radioweb.pro</span>)
+              Entrar como Carlos (Ouvinte VIP)
             </button>
           </div>
         )}

@@ -18,6 +18,7 @@ export interface StationStatus {
     elapsed: number;
     genre: string;
     audioUrl?: string;
+    coverUrl?: string;
   };
   listenersCount: number;
   bitrate: string;

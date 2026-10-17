@@ -85,6 +85,8 @@ const defaultStation: StationStatus = {
     duration: 215,
     elapsed: 48,
     genre: 'Synthwave',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    coverUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
   },
   listenersCount: 1,
   bitrate: '320 kbps (HD)',
@@ -168,6 +170,12 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isNewPodcastModalOpen, setIsNewPodcastModalOpen] = useState<boolean>(false);
 
   const wsRef = useRef<WebSocket | null>(null);
+  const clientId = useRef<string>('client_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8));
+  const activeTabRef = useRef(activeTab);
+
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [activeTab]);
 
   // 1. Establish WebSocket Connection
   useEffect(() => {
@@ -227,15 +235,19 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   elapsed: 0,
                   genre: msg.track.genre || 'Hit',
                   audioUrl: msg.track.audioUrl,
+                  coverUrl: msg.track.coverUrl,
                 },
               }));
-              if (msg.track.audioUrl) {
+              // Listeners (or separate windows) play the stream audio
+              if (msg.track.audioUrl && (msg.senderId !== clientId.current || activeTabRef.current === 'listener')) {
                 setIsPlayingLive(true);
                 globalAudioEngine.playAudioUrl(msg.track.audioUrl, msg.track.title);
               }
             }
           } else if (msg.type === 'station_media_stop') {
-            globalAudioEngine.stopRadioAutomation();
+            if (msg.senderId !== clientId.current || activeTabRef.current === 'listener') {
+              globalAudioEngine.stopRadioAutomation();
+            }
             setStation((prev) => ({
               ...prev,
               currentTrack: {
@@ -517,12 +529,15 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         duration: track.duration,
         elapsed: 0,
         genre: track.genre,
+        audioUrl: track.audioUrl,
+        coverUrl: track.coverUrl,
       },
     });
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
           type: 'station_media_play',
+          senderId: clientId.current,
           track: {
             title: track.title,
             artist: track.artist,
@@ -554,12 +569,15 @@ export const RadioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         duration: nextTrack.duration,
         elapsed: 0,
         genre: nextTrack.genre,
+        audioUrl: nextTrack.audioUrl,
+        coverUrl: nextTrack.coverUrl,
       },
     });
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
           type: 'station_media_play',
+          senderId: clientId.current,
           track: {
             title: nextTrack.title,
             artist: nextTrack.artist,
